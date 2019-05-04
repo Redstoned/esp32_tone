@@ -28,3 +28,4 @@ For them to work You have to call `setCompatibleMode(true)` or `setCompatibleMod
 
 
 ### Other handy functions:
+They don't exist yet

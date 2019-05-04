@@ -1,2 +1,6 @@
 # esp32_tone
-A library for the ESP32 for the Arduino tone()-functions and much more!
+
+This library adds the Arduino tone() and noTone() functions for the ESP32.
+The library is built that You can use Your existing Arduino code with the ESP32.
+
+# How to use

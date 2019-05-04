@@ -27,5 +27,6 @@ For them to work You have to call `setCompatibleMode(true)` or `setCompatibleMod
 **Otherwise the functions won't do anything!**
 
 
+
 ### Other handy functions:
 They don't exist yet

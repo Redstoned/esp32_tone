@@ -21,5 +21,6 @@ tone(int pin, unsigned int frequency)
 tone(int pin, unsigned int frequency, unsigned long duration)
 noTone(int pin)
 ```
-They work just as the Arduino functions [tone](https://www.arduino.cc/reference/en/language/functions/advanced-io/tone/) and [noTone](https://www.arduino.cc/reference/en/language/functions/advanced-io/notone/)
-For this to work You have to call `setCompatibleMode(true)` or `setCompatibleMode()` first (e.g. in setup()). **Otherwise the functions won't do anything!**
+They work just as the Arduino functions [tone](https://www.arduino.cc/reference/en/language/functions/advanced-io/tone/) and [noTone](https://www.arduino.cc/reference/en/language/functions/advanced-io/notone/).
+For them to work You have to call `setCompatibleMode(true)` or `setCompatibleMode()` first (e.g. in setup()).
+**Otherwise the functions won't do anything!**

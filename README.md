@@ -20,3 +20,4 @@ tone(int pin, unsigned int frequency)
 tone(int pin, unsigned int frequency, unsigned long duration)
 noTone(int pin)
 ```
+They work just as the Arduino functions [tone](https://www.arduino.cc/reference/en/language/functions/advanced-io/tone/) and [noTone](https://www.arduino.cc/reference/en/language/functions/advanced-io/notone/)

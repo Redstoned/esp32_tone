@@ -29,4 +29,7 @@ For them to work You have to call `setCompatibleMode(true)` or `setCompatibleMod
 
 
 ### Other handy functions:
-They don't exist yet
+There is currently one enhanced function:
+```
+beepForever(int pin, unsigned int frequency, unsigned long toneOnTime, unsigned long toneOggTime, unsigned int repeatTone, unsigned long toneDelay)
+```

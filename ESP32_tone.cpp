@@ -10,12 +10,21 @@ int CompatibleBuzzerPin = 1;
 bool CompatibleBuzzerPinSet = false;
 bool CompatibleMode = false;
 
-ESP32_tone::ESP32_tone()
+int BuzzerPin = 1;
+unsigned int Frequency, RepeatTone;
+unsigned long ToneOffTime, ToneOnTime, ToneDelay;
+bool BeepActive = false;
+
+uint8_t PWMChannel = 0;
+
+
+ESP32_tone::ESP32_tone(uint8_t channel)
 {
+	PWMChannel = channel;
 	xTaskCreate(this->StaticBuzzerTaskStart, "UpdateBuzzer", 10000, (void*)this, 1, NULL);
 	
-	ledcSetup(0, 0, 8);
-	ledcWrite(0, 125);
+	ledcSetup(PWMChannel, 0, 8);
+	ledcWrite(PWMChannel, 125);
 }
 
 void ESP32_tone::StaticBuzzerTaskStart(void* _this)
@@ -33,13 +42,24 @@ void ESP32_tone::BuzzerTask()
 			{
 				if(millis() > CompatibleToneStopTime)
 				{
-					this->noTone(15);
+					this->noTone(CompatibleBuzzerPin);
 				}
 			}
 		}
 		else
 		{
-		    delay(20);
+		    if(BeepActive)
+			{
+				for(int i = 0; i < RepeatTone; i++)
+				{
+					ledcAttachPin(BuzzerPin, PWMChannel);
+					delay(ToneOnTime);
+					ledcDetachPin(BuzzerPin);
+					delay(ToneOffTime);
+					BeepActive? i = i : i = RepeatTone;
+				}
+				delay(ToneDelay);
+			}
 		}
 		delay(1);
 	}
@@ -66,8 +86,8 @@ void ESP32_tone::tone(int pin, unsigned int frequency)
 	{
 		if(pin == CompatibleBuzzerPin || !CompatibleToneActive)
 	    {
-		    ledcWriteTone(0, frequency);
-		    ledcAttachPin(pin, 0);
+		    ledcWriteTone(PWMChannel, frequency);
+		    ledcAttachPin(pin, PWMChannel);
 			CompatibleBuzzerPin = pin;
 		    CompatibleToneStopTime = -1;
 		    CompatibleToneActive = true;
@@ -88,10 +108,10 @@ void ESP32_tone::tone(int pin, unsigned int frequency, unsigned long duration)
 	{
 	    if(pin == CompatibleBuzzerPin || !CompatibleToneActive)
 	    {
-		    ledcWriteTone(0, frequency);
+		    ledcWriteTone(PWMChannel, frequency);
 		    CompatibleToneStopTime = millis() + duration;
 		    CompatibleToneActive = true;
-		    ledcAttachPin(pin, 0);
+		    ledcAttachPin(pin, PWMChannel);
 			CompatibleBuzzerPin = pin;
 	    }
 	}
@@ -109,5 +129,26 @@ void ESP32_tone::noTone(int pin)
 	{
 		ledcDetachPin(CompatibleBuzzerPin);
 		if(CompatibleToneActive) CompatibleToneActive = false;
-	}	
+	}
+	
+	else if(pin == BuzzerPin && BeepActive &&!CompatibleMode)
+	{
+		BeepActive = false;
+		ledcDetachPin(pin);
+	}
+}
+
+void ESP32_tone::beepForever(int pin, unsigned int frequency, unsigned long toneOnTime, unsigned long toneOffTime, unsigned int repeatTone, unsigned long toneDelay)
+{
+	if(repeatTone > 0 && !CompatibleMode)
+	{
+		BuzzerPin = pin;
+		Frequency = frequency;
+		ToneOnTime = toneOnTime;
+		ToneOffTime = toneOffTime;
+		RepeatTone = repeatTone;
+		ToneDelay = toneDelay;
+		BeepActive = true;
+		ledcWriteTone(PWMChannel, frequency);
+	}
 }
